@@ -1,12 +1,15 @@
-#print("running")
 import requests
 from bs4 import BeautifulSoup
 import json
 from datetime import datetime
 import pytz
 import time
+url = "https://my.frantech.ca/cart.php?gid=39"  
+webhook_url = "https://discord.com/api/webhooks/1126068796038316053/SwjllZjWm839D395pXRsvYSFKtQGZwu1gbfRicnM-qFggY_JhaoBMo_8BnEUDmnOcb3D"  # Replace with your actual Discord webhook URL
+
+
 def log(string):
-    with open("/root/franchecker/log.txt", 'a') as file:
+    with open("~/log.txt", 'a') as file:
         file.write(string + '\n')
     print(f'String saved .')
 
@@ -23,9 +26,6 @@ while True:
     tehran_time = datetime.now(tehran_timezone)
 
     formatted_time = tehran_time.strftime('%Y-%m-%d %H:%M:%S')
-
-
-    url = "https://my.frantech.ca/cart.php?gid=39"  
     response = requests.get(url)
     html = response.text
 
@@ -43,7 +43,6 @@ while True:
         log(discordmsg)
     else:
         discordmsg = f" @here VPS was Available at {formatted_time} and {availability.replace('Available', '')} vps's were available"
-        webhook_url = "https://discord.com/api/webhooks/1126068796038316053/SwjllZjWm839D395pXRsvYSFKtQGZwu1gbfRicnM-qFggY_JhaoBMo_8BnEUDmnOcb3D"  # Replace with your actual Discord webhook URL
         data = {"content": f"{discordmsg}"}
         headers = {"Content-Type": "application/json"}
 
