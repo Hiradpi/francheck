@@ -3,6 +3,10 @@
 ## Description
 FranChecker is a Python script that checks BuyVM's website for VPS availability. If any VPS becomes available, it sends the information to you through your Discord webhook.
 
+## Why FranChecker?
+If you're a tech enthusiast or someone looking for reliable and budget-friendly VPS solutions, BuyVM is a popular choice. However, due to its limited resources and high demand, their VPS servers can quickly sell out. FranChecker comes to the rescue by automating the process of checking for VPS availability, so you don't miss out on securing one when they become available.
+
+
 ## Features
 - Monitors BuyVM's website for VPS availability.
 - Sends notifications to your Discord webhook when a VPS becomes available.
@@ -23,7 +27,7 @@ FranChecker is a Python script that checks BuyVM's website for VPS availability.
 ## Configuration
 Edit the `main.py` file to set your Discord webhook URL. You can find your Discord webhook URL by going to your Discord server settings -> Integrations -> Webhooks -> Create Webhook.
 
-You can also adjust the checking interval in the `config.py` file by modifying the `CHECK_INTERVAL_SECONDS` variable.
+You can also adjust the checking interval in the `main.py` file by modifying the `CHECK_INTERVAL_SECONDS` variable.
 
 ## Disclaimer
 This script is intended for educational purposes and personal use only. The author is not responsible for any misuse or violation of the terms of service of BuyVM or Discord. Use it at your own risk.
