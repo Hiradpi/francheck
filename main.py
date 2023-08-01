@@ -7,13 +7,13 @@ import time
 url = "https://my.frantech.ca/cart.php?gid=39"  
 webhook_url = ""  # Replace with your actual Discord webhook URL
 #example https://discord.com/api/webhooks/420698542069/Swjl456jWm839D395pXRsvYSFKtGayPornFurryAssNiggassnM-qFggY_JhaoBMo_8BnEUDmns3D
-
+CHECK_INTERVAL_SECONDS = 3600 #it's in secconds not ms so try this to not below 5 mins or frantech's antiflood will block you
 
 def log(string):
     with open("~/log.txt", 'a') as file:
         file.write(string + '\n')
     print(f'String saved .')
-
+#if you wanted to run this on systemmd on your server this will save results for you in your root path
 
 
 log("running")
@@ -21,7 +21,7 @@ log("running")
 
 
 while True:
-    time.sleep(3600)
+    time.sleep(CHECK_INTERVAL_SECONDS)
     tehran_timezone = pytz.timezone('Asia/Tehran')
 
     tehran_time = datetime.now(tehran_timezone)
