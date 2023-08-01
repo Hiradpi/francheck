@@ -5,7 +5,8 @@ from datetime import datetime
 import pytz
 import time
 url = "https://my.frantech.ca/cart.php?gid=39"  
-webhook_url = "https://discord.com/api/webhooks/1126068796038316053/SwjllZjWm839D395pXRsvYSFKtQGZwu1gbfRicnM-qFggY_JhaoBMo_8BnEUDmnOcb3D"  # Replace with your actual Discord webhook URL
+webhook_url = ""  # Replace with your actual Discord webhook URL
+#example https://discord.com/api/webhooks/420698542069/Swjl456jWm839D395pXRsvYSFKtGayPornFurryAssNiggassnM-qFggY_JhaoBMo_8BnEUDmns3D
 
 
 def log(string):
