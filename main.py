@@ -1,58 +1,108 @@
 import requests
-from bs4 import BeautifulSoup
-import json
-from datetime import datetime
-import pytz
+import argparse
 import time
-url = "https://my.frantech.ca/cart.php?gid=39"  
-webhook_url = ""  # Replace with your actual Discord webhook URL
-#example https://discord.com/api/webhooks/420698542069/Swjl456jWm839D395pXRsvYSFKtGayPornFurryAssNiggassnM-qFggY_JhaoBMo_8BnEUDmns3D
-CHECK_INTERVAL_SECONDS = 3600 #it's in secconds not ms so try this to not below 5 mins or frantech's antiflood will block you
-
-def log(string):
-    with open("~/log.txt", 'a') as file:
-        file.write(string + '\n')
-    print(f'String saved .')
-#if you wanted to run this on systemmd on your server this will save results for you in your root path
-
-
-log("running")
 
 
 
-while True:
-    time.sleep(CHECK_INTERVAL_SECONDS)
-    tehran_timezone = pytz.timezone('Asia/Tehran')
+parser = argparse.ArgumentParser(description='Francheck a tool for checking frantech (Buyvm) products')
 
-    tehran_time = datetime.now(tehran_timezone)
+parser.add_argument('--code', help='the code on the buy link at the pid value get request https://my.frantech.ca/cart.php?a=add&pid=1411 here is 1411')
+parser.add_argument('--delay', help='How much delay you want to check for avalability in secconds (recomended Is 300)')
 
-    formatted_time = tehran_time.strftime('%Y-%m-%d %H:%M:%S')
-    response = requests.get(url)
-    html = response.text
-
-    soup = BeautifulSoup(html, 'html.parser')
-    package_div = soup.find('div', {'class': 'package', 'id': 'product1'})
-    qty_div = package_div.find('div', {'class': 'package-qty'})
-    try:
-        availability = qty_div.get_text(strip=True)
-    except AttributeError:
-        availability = "Unlimited"
+args = parser.parse_args()
 
 
-    if availability == "0 Available":
-        discordmsg = "Was not avalable"
-        log(discordmsg)
+
+
+def checkav(code , delay):
+    if delay == None or delay == "":
+        delay = 3
     else:
-        discordmsg = f" @here VPS was Available at {formatted_time} and {availability.replace('Available', '')} vps's were available"
-        data = {"content": f"{discordmsg}"}
-        headers = {"Content-Type": "application/json"}
+        delay = int(delay)
 
-        response = requests.post(webhook_url, data=json.dumps(data), headers=headers)
+    while True:
+        Request = requests.get(f"https://buyvm.hasstock.net/api/package/{code}.json")
+        data = Request.json()
+        print(data)
+        webhook_url = 'https://discord.com/api/webhooks/1126068796038316053/SwjllZjWm839D395pXRsvYSFKtQGZwu1gbfRicnM-qFggY_JhaoBMo_8BnEUDmnOcb3D'
+
+        message = f"Data: {data['name']} (ID: {data['id']})\nQuantity: {data['quantity']}\nAvailable: {data['hasStock']}\nLink: {data['link']}"
+
+        payload = {
+            'content': message
+        }
+
+        response = requests.post(webhook_url, json=payload)
 
         if response.status_code == 204:
-            log(discordmsg)
+            print('Data sent to Discord successfully.')
         else:
-            log("Failed to send availability to Discord webhook.")
+            print(f'Failed to send data to Discord. Status code: {response.status_code}')
+        time.sleep(delay)
 
-    log(availability)
+
+def noarg():
+    Request = requests.get("https://buyvm.hasstock.net/api/stock.json")
+    JsonData = Request.json()
+    print(Request.status_code)
+    names = []
+    LV = []
+    NY = []
+    LU = []
+    MIA = []
+
+    for key, value in JsonData.items():
+        value = [value["name"] , value["id"]]
+        names.append(value)
+
+    location = input("Please select your disiered server location \n1: Las Vegas\n2: New York\n3: Luxembourg\n4: Miami\n> ")
+
+    for i, name in enumerate(names, 1):
+        if name[0].startswith("LV") and location == "1":
+            LV.append((i, name))
+        elif name[0].startswith("NY") and location == "2" :
+            NY.append((i, name))
+        elif name[0].startswith("LU") and location == "3" :
+            LU.append((i, name))
+        elif name[0].startswith("MIA") and location == "4" :
+            MIA.append((i, name))
+    if LV:
+        print("\nLV Items:")
+        select_and_print(LV, "LV")
+
+    if NY:
+        print("\nNY Items:")
+        select_and_print(NY, "NY")
+
+    if LU:
+        print("\nLU Items:")
+        select_and_print(LU, "LU")
+    if MIA:
+        print("\nLU Items:")
+        select_and_print(MIA, "MIA")
+
+def select_and_print(category_list, category_name):
+    for i, (number, item) in enumerate(category_list, 1):
+        print(f"{i}: {item[0]}")
+
+    try:
+        selected_number = int(input(f"Enter the number of the {category_name} item you want to select: "))
+        if 1 <= selected_number <= len(category_list):
+            selected_item = category_list[selected_number - 1][1]
+            print("\nChecking avalability of",selected_item[0],"every 10 secconds")
+            checkav(selected_item[1],args.delay)
+        else:
+            print("Invalid number. Please enter a valid number.")
+    except ValueError:
+        print("Invalid input. Please enter a valid number.")
+
+
+
+
+
+if args.code == None:
+    noarg()
+else:
+    checkav(args.code , args.delay)
+
 
