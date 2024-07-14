@@ -47,9 +47,6 @@ python main.py --code 1411 --delay 300 --mode 0
 
 Contributions to Francheck are welcome! Feel free to submit issues, feature requests, or pull requests via the GitHub repository.
 
-**License:**
-
-This project is licensed under the MIT License. See the LICENSE file for details.
 
 **Author:**
 
